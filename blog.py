@@ -74,10 +74,13 @@ def delete():
         return redirect(url_for('main'))
     else:
         g.db = connect_db()
-        g.db.execute('delete from posts where title = ?',[request.form['title']])
+        ret = g.db.execute('delete from posts where title = ?',[request.form['title']])
         g.db.commit()
         g.db.close()
-        flash('New entry was successfully posted!')
+        if ret.rowcount == 0:
+            flash('Title is not valid...!')
+        else:
+            flash('Entry was successfully deleted...!')
         return redirect(url_for('main'))
 
 @app.route('/main')
@@ -98,4 +101,4 @@ def logout():
 
 
 if __name__ == "__main__":
-    app.run(debug=False)
+    app.run(debug=True)
